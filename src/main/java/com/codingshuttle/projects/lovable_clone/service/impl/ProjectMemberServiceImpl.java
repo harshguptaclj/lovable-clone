@@ -38,25 +38,17 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
 
         Project project = getAccessibleProjectById(projectId,userId);
 
-        List<MemberResponse> memberResponseList = new ArrayList<>();
-        memberResponseList.add(projectMemberMapper.toProjectMemberResponseFromOwner(project.getOwner()));
-
-        memberResponseList.addAll(projectMemberRepository.findByIdProjectId(projectId)
+        return projectMemberRepository.findByIdProjectId(projectId)
                 .stream()
                 .map(projectMemberMapper::toProjectMemberResponseFromMember)
-                .toList());
+                .toList();
 
-        return memberResponseList;
     }
 
     @Override
     public MemberResponse inviteMember(Long projectId, InviteMemberRequest request, Long userId) {
 
         Project project = getAccessibleProjectById(projectId,userId);
-
-        if(!project.getOwner().getId().equals(userId)){
-            throw new RuntimeException("Not allowed to invite member");
-        }
 
         User invitee = (User) userRepository.findByEmail(request.email()).orElseThrow();
 
@@ -88,9 +80,6 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
 
         Project project = getAccessibleProjectById(projectId,userId);
 
-        if(!project.getOwner().getId().equals(userId)){
-            throw new RuntimeException("Not allowed to update member");
-        }
 
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId,memberId);
 
@@ -108,10 +97,6 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     public void deleteProjectMember(Long projectId, Long memberId, Long userId) {
 
         Project project = getAccessibleProjectById(projectId,userId);
-
-        if(!project.getOwner().getId().equals(userId)){
-            throw new RuntimeException("Not allowed to update member");
-        }
 
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId,memberId);
 
