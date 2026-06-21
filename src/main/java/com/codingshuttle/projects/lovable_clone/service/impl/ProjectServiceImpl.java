@@ -5,6 +5,7 @@ import com.codingshuttle.projects.lovable_clone.dto.project.ProjectResponse;
 import com.codingshuttle.projects.lovable_clone.dto.project.ProjectSummaryResponse;
 import com.codingshuttle.projects.lovable_clone.entity.Project;
 import com.codingshuttle.projects.lovable_clone.entity.User;
+import com.codingshuttle.projects.lovable_clone.error.ResourceNotFoundException;
 import com.codingshuttle.projects.lovable_clone.mapper.ProjectMapper;
 import com.codingshuttle.projects.lovable_clone.repository.ProjectRepository;
 import com.codingshuttle.projects.lovable_clone.repository.UserRepository;
@@ -96,6 +97,7 @@ public class ProjectServiceImpl implements ProjectService {
     //Internal Methods
 
     private Project getAccessibleProjectById(Long id, Long UserId){
-        return  projectRepository.findAllAccessibleProjectById(UserId,id).orElseThrow();
+        return  projectRepository.findAllAccessibleProjectById(UserId,id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project", id.toString()));
     }
 }
